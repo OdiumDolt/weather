@@ -1,32 +1,56 @@
 <script lang='ts'>
+import type { Country } from '#lib/getWeather.ts';
 import { getNewWeather } from '#lib/weather.remote.ts'
-let weather: null | number = $state(null);
-let name: null | string = $state(null)
-let loading = $state(false);
-let guess = $state(false)
+import type { RemoteQuery } from '$app/server';
+let locations: [RemoteQuery<Country>, RemoteQuery<Country>] = $state([getNewWeather(0), getNewWeather(1)]);
+
+
+async function checkAnwser(selected: Country){
+    let left = await locations[0]
+    let right = await locations[1]
+    if (left.temp > right.temp && left == selected){
+        locations[1].refresh()
+        return
+    }
+    else if(right.temp > left.temp && right == selected){
+        locations[0].refresh()
+        return
+    }
+    locations[0].refresh()
+    locations[1].refresh()
+}
 </script>
+<div class='game-container'>
+    <div class='options-container'>
+        {#each locations as country}   
+            {#await country}
+                Loading...
+            {:then c} 
+                <button class='options-button' onclick={() => checkAnwser(c)}>{c.name}</button>
+            {/await}
+        {/each}
+    </div>
+</div>
 
-<div>{name}</div>
-{#if !guess}
-<div class:guess>{weather}</div>
-{/if}
+<style lang="scss">
+.game-container{
+    display: flex;
+    width: 100svw;
+    height: 100svh;
+    align-items: center;
+    justify-content: center;
 
-{#if guess}
-<button onclick={()=> {
-    guess = false
-}}>Show</button>
-{/if}
+}
 
-{#if !guess}
-<button onclick={async () => {
-    loading = true
-    let res = await getNewWeather()
-    name = res.name
-    weather = res.weather
-    loading = false
-    guess = true
-}} >Update</button>
-{/if}
-
-<style>
+.options-button {
+    color: #FFA500;
+    height: 100%;
+}
+.options-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    width: 80%;
+    height: 80%;
+}
 </style>
