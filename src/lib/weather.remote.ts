@@ -1,7 +1,7 @@
 import { query } from "$app/server";
 import data from '../../static/countries.json'
 import type { Country } from './getWeather'
-
+import {getRandomInt} from '#lib/logic.ts'
 // gets the weather via Country
 async function getWeatherFetch(location: Country){
     const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${location.coords.lat}&longitude=${location.coords.long}&hourly=temperature_2m&forecast_days=1`)
@@ -9,13 +9,6 @@ async function getWeatherFetch(location: Country){
     return weather["hourly"]["temperature_2m"][0]
 }
 
-// inclusive for min and max
-function getRandomInt(min: number, max: number): number {
-    const minCeiled = Math.ceil(min);
-    const maxFloored = Math.floor(max);
-    console.log(Math.random())
-    return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
-}
 
 // entry function - remote function - slot for unique requests
 export const getNewWeather = query('unchecked', async (slot: number): Promise<Country> => {
