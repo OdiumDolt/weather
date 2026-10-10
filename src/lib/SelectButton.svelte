@@ -10,7 +10,7 @@ let { location, game }: {location: Country, game: Game} = $props()
     {#if location == null}
         Loading
     {:else}
-    {location.name}
+        {location.name}
     {/if}
 </button>
 
