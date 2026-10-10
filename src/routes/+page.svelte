@@ -2,33 +2,21 @@
 import type { Country } from '#lib/getWeather.ts';
 import { getNewWeather } from '#lib/weather.remote.ts'
 import type { RemoteQuery } from '$app/server';
-let locations: [RemoteQuery<Country>, RemoteQuery<Country>] = $state([getNewWeather(0), getNewWeather(1)]);
+import '#lib/SelectButton.svelte';
+import SelectButton from '#lib/SelectButton.svelte';
+import {Game} from "#lib/logic.ts"
 
-async function checkAnwser(selected: Country){
-    let left = await locations[0]
-    let right = await locations[1]
-    if (left.temp > right.temp && left == selected){
-        locations[1].refresh()
-        return
-    }
-    else if(right.temp > left.temp && right == selected){
-        locations[0].refresh()
-        return
-    }
-    locations[0].refresh()
-    locations[1].refresh()
-}
+const game = new Game()
+
 </script>
 
 <div class='game-container'>
     <div class='options-container'>
-        {#each locations as country}
+        {#each game.locations as country}
             {#await country}
-                Loading...
+                <!-- <SelectButton location={null} game={game}></SelectButton> -->
             {:then c} 
-                <button class='options-button' onclick={() => checkAnwser(c)}>
-                    {c.name}
-                </button>
+                <SelectButton location={c} game={game}></SelectButton>
             {/await}
         {/each}
     </div>
@@ -41,11 +29,7 @@ async function checkAnwser(selected: Country){
     height: 100svh;
     align-items: center;
     justify-content: center;
-}
-
-.options-button {
-    color: #FFA500;
-    height: 100%;
+    background-color: rgb(37, 37, 37);
 }
 
 .options-container{
