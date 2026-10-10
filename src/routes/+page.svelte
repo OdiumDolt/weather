@@ -27,6 +27,7 @@ const game = new Game()
     display: flex;
     width: 100svw;
     height: 100svh;
+    max-height: 100vmin;
     align-items: center;
     justify-content: center;
     background-color: rgb(37, 37, 37);
@@ -35,8 +36,9 @@ const game = new Game()
 .options-container{
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 30px;
+    gap: 20%;
     width: 80%;
     height: 80%;
+    max-width: 100vmin;
 }
 </style>
