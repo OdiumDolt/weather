@@ -3,12 +3,7 @@ import type { Country } from './getWeather';
 import { getNewWeather } from '#lib/weather.remote.ts'
 import type { Modes } from "#lib/assets/text.ts"
 import { MODES } from "#lib/assets/text.ts"
-
-export function getRandomInt(min: number, max: number): number {
-    const minCeiled = Math.ceil(min);
-    const maxFloored = Math.floor(max);
-    return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
-}
+import { getRandomInt } from "#lib/help.ts"
 
 export class Game {
     locations: RemoteQuery<Country>[]
