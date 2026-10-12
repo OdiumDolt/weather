@@ -6,11 +6,12 @@ let { location, game }: {location: Country, game: Game} = $props()
 </script>
 
 
-<button class="location-button" onclick={() => {game.checkAnwser(location)}}>
+<button class="location-button" onclick={() => {game.anwser(location)}}>
     {#if location == null}
         Loading
     {:else}
         {location.name}
+        {location.temp}
     {/if}
 </button>
 

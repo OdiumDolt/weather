@@ -5,12 +5,16 @@ import type { RemoteQuery } from '$app/server';
 import '#lib/SelectButton.svelte';
 import SelectButton from '#lib/SelectButton.svelte';
 import {Game} from "#lib/logic.ts"
+    import { modeText } from '#lib/assets/text.ts';
 
 const game = new Game()
 
 </script>
 
 <div class='game-container'>
+    <div>{modeText[game.mode
+        
+    ]}</div>
     <div class='options-container'>
         {#each game.locations as country}
             {#await country}

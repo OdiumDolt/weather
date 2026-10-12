@@ -6,7 +6,12 @@ import {getRandomInt} from '#lib/logic.ts'
 async function getWeatherFetch(location: Country){
     const res = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${location.coords.lat}&longitude=${location.coords.long}&hourly=temperature_2m&forecast_days=1`)
     const weather = await res.json()
-    return weather["hourly"]["temperature_2m"][0]
+    try{    
+        return weather["hourly"]["temperature_2m"][0]
+    }
+    catch (e) {
+        if (e instanceof TypeError) console.log(weather)
+    }
 }
 
 

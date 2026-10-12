@@ -1,43 +1,74 @@
 import type { RemoteQuery } from '$app/server';
 import type { Country } from './getWeather';
 import { getNewWeather } from '#lib/weather.remote.ts'
+import type { Modes } from "#lib/assets/text.ts"
+import { MODES } from "#lib/assets/text.ts"
 
 export function getRandomInt(min: number, max: number): number {
     const minCeiled = Math.ceil(min);
     const maxFloored = Math.floor(max);
-    console.log(Math.random())
     return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
 
 export class Game {
-    locations: [RemoteQuery<Country>, RemoteQuery<Country>]
-    mode: string[] = ['hot', 'cold', 'humid']
+    locations: RemoteQuery<Country>[]
+    mode: Modes
+
     constructor(){
         this.locations = [getNewWeather(0), getNewWeather(1)]
+        this.mode = this.newMode()
     }
 
-    getNewMode(): string{
-        return this.mode[getRandomInt(0, this.mode.length - 1)]
-    }
-
-    
-
-    // change to return next state and have function update animations and such
-    async checkAnwser(selected: Country){
-        // if (this.location[0] == null || this.location[1] == null) return
+    async anwser(selected: Country){
+        // unwrap locations to Country
+        const all = await Promise.all(this.locations.map(async(c) => await c))
         
-        let left = await this.locations[0]
-        let right = await this.locations[1]
         
-        if (left.temp > right.temp && left == selected){
-            this.locations[1].refresh()
-            return
+        // check if the users anwser was correct and load new location data
+        // respectivaly
+        if (this.checkAnwser(selected, all)) {
+            var correctIndex = all.findIndex(c => c === selected) 
+            this.loadNewLocations(this.locations.toSpliced(correctIndex, 1))
         }
-        else if(right.temp > left.temp && right == selected){
-            this.locations[0].refresh()
-            return
-        }
-        this.locations[0].refresh()
-        this.locations[1].refresh()
+        else this.loadNewLocations(this.locations)
+        
+        
+        this.newMode()
     }
+
+    newMode(){
+        this.mode = MODES[getRandomInt(0, MODES.length)]
+        return this.mode
+    }
+
+    loadNewLocations(c: RemoteQuery<Country>[]){
+        console.log(c)
+        c.forEach(c => c.refresh())
+    }
+
+    checkAnwser(selected: Country, all: Country[]): boolean{
+        switch (this.mode) {
+            case "hot":
+                return this.checkWeatherHot(selected, all)
+            case "cold":
+                return this.checkWeatherCold(selected, all)
+        }
+        return false
+    }
+
+    checkWeatherHot(selected: Country, all: Country[]): boolean{
+        for (let c of all){
+            if (c.temp > selected.temp) return false
+        }
+        return true
+    }
+
+    checkWeatherCold(selected: Country, all: Country[]): boolean{
+        for (let c of all) {
+            if (c.temp < selected.temp) return false
+        }
+        return true
+    }
+
+
 }
