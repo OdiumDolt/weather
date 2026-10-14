@@ -1,6 +1,6 @@
 import { query } from "$app/server";
 import data from '../../static/countries.json'
-import type { Country } from './getWeather'
+import type { Country } from './weatherType'
 import { getRandomInt } from '#lib/help.ts'
 
 // gets the weather via Country
