@@ -1,24 +1,21 @@
 <script lang='ts'>
-import type { Country } from '#lib/getWeather.ts';
+import type { Country } from '#lib/weatherType.ts';
 import { getNewWeather } from '#lib/weather.remote.ts'
 import type { RemoteQuery } from '$app/server';
 import '#lib/SelectButton.svelte';
 import SelectButton from '#lib/SelectButton.svelte';
-import {Game} from "#lib/logic.ts"
-    import { modeText } from '#lib/assets/text.ts';
+import {Game} from "#lib/logic.svelte.ts"
+import { modeText } from '#lib/assets/text.ts';
 
 const game = new Game()
-
 </script>
 
 <div class='game-container'>
-    <div>{modeText[game.mode
-        
-    ]}</div>
+    <div class='question-text geo-regular'>{modeText[game.mode]}</div>
     <div class='options-container'>
         {#each game.locations as country}
             {#await country}
-                <!-- <SelectButton location={null} game={game}></SelectButton> -->
+                Loading...
             {:then c} 
                 <SelectButton location={c} game={game}></SelectButton>
             {/await}
@@ -26,9 +23,14 @@ const game = new Game()
     </div>
 </div>
 
+
 <style lang="scss">
+@use '../styles/fonts.scss';
+
 .game-container{
     display: flex;
+    flex-direction: column;
+    gap: 5%;
     width: 100svw;
     height: 100svh;
     max-height: 100vmin;
@@ -44,5 +46,10 @@ const game = new Game()
     width: 80%;
     height: 80%;
     max-width: 100vmin;
+}
+
+.question-text{
+    color: white;
+    font-size: 30px;
 }
 </style>
