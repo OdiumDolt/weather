@@ -1,5 +1,5 @@
 import type { RemoteQuery } from '$app/server';
-import type { Country } from './getWeather';
+import type { Country } from './weatherType';
 import { getNewWeather } from '#lib/weather.remote.ts'
 import type { Modes } from "#lib/assets/text.ts"
 import { MODES } from "#lib/assets/text.ts"
@@ -7,11 +7,10 @@ import { getRandomInt } from "#lib/help.ts"
 
 export class Game {
     locations: RemoteQuery<Country>[]
-    mode: Modes
-
+    mode = $state<Modes>(MODES[0])
     constructor(){
         this.locations = [getNewWeather(0), getNewWeather(1)]
-        this.mode = this.newMode()
+        this.newMode()
     }
 
     async anwser(selected: Country){
@@ -32,8 +31,8 @@ export class Game {
     }
 
     newMode(){
-        this.mode = MODES[getRandomInt(0, MODES.length)]
-        return this.mode
+        this.mode = MODES[getRandomInt(0, MODES.length - 1)]
+        console.log(this.mode)
     }
 
     loadNewLocations(c: RemoteQuery<Country>[]){
