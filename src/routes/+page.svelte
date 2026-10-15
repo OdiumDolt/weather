@@ -15,7 +15,7 @@ const game = new Game()
     <div class='options-container'>
         {#each game.locations as country}
             {#await country}
-                Loading...
+                <SelectButton location={null} game={game}></SelectButton>
             {:then c} 
                 <SelectButton location={c} game={game}></SelectButton>
             {/await}
